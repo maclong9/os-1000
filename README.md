@@ -86,4 +86,47 @@ Branch instruction change the control flow of the program. They are used to impl
 
 ### Function Calls
 
+`jal` (jump and link) and `ret` (return) instructions are used to call functions and return from them:
+
+``` asm
+    li  a0, 123      // Load 123 to a0 register (function argument)
+    jal ra, <label>  // Jump to <label> and store the return address
+                     // in the ra register.
+
+    // After the function call, continue here...
+
+// int func(int a) {
+//   a += 1;
+//   return a;
+// }
+<label>:
+    addi a0, a0, 1    // Increment a0 (first argument) by 1
+
+    ret               // Return to the address stored in ra.
+                      // a0 register has the return value.
+```
+
+Function arguments are passed in  `a0`–`a7` registers, and the return value is stored in `a0` register, as per the calling convention.
+
+### Stack
+
+Stack is a Last-In-First-Our (LIFO) memory space used for function calls and local variables. It grows downwards, and the stack pointer `sp` points to the top of the stack. 
+
+To save a value to the stack, decrement the stack pointer and store the value:
+
+``` asm
+    addi sp, sp, -4  // Move the stack pointer down by 4 bytes
+    sw   a0, (sp)    // Store a0 register to the stack
+```
+
+To load a value from the stack, load the value and increment the stack pointer:
+
+``` asm
+    lw   a0, (sp)    // Load a0 register from the stack
+    addi sp, sp, 4   // Move the stack pointer up by 4 bytes
+```
+
+> [!TIP]
+> For simplicity these operations are sometimes called `push` and `pop` because you `push` a new item into the stack and `pop` the top item off the stack.
+
 
